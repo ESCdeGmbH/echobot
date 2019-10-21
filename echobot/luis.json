@@ -1,0 +1,9 @@
+﻿{
+  "name": "LUIS",
+  "appId": "",
+  "authoringKey": "",
+  "region": "westeurope",
+  "subscriptionKey": "",
+  "spellCheckerKey": null,
+  "version": "0.1"
+}
