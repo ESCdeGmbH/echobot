@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace echobot
 {
+    /// <summary>
+    /// The entrypoint to the webapp.
+    /// </summary>
     public class Program
     {
         public static void Main(string[] args)

@@ -17,24 +17,29 @@ using System.Threading.Tasks;
 
 namespace echobot
 {
+    /// <summary>
+    /// This is the main class of the bot. It defines the mappings from intents to dialogs.
+    /// </summary>
     public class Bot : Framework.Bot<BotServices, IBot4Dialog, BaseDialog<IBot4Dialog, BotServices>>
     {
+        // The location of the LUIS Service Definition for classification.
         private static readonly string LUISConfig = RootPath.GetRootPath("echobot", "luis.json");
 
         public Bot(IConfiguration config, ConversationState state, ILoggerFactory loggerFactory) : base(state, new BotServices(config), loggerFactory, null)
         {
             LuisServiceDefinition lsd = JsonConvert.DeserializeObject<LuisServiceDefinition>(File.ReadAllText(LUISConfig));
-            _withCorrections = new Microsoft.Bot.Builder.AI.Luis.LuisRecognizer(lsd.GetLuisService(), new Microsoft.Bot.Builder.AI.Luis.LuisPredictionOptions());
+            // Use LSD and no spell checking
+            _recognizer = new CombinedLuisRecognizer(lsd, false);
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            ResultsWithCorrection = await _withCorrections.RecognizeAsync(turnContext, cancellationToken);
+            await _recognizer.Recognize(turnContext, cancellationToken);
             await HandleDialog(turnContext, cancellationToken);
         }
 
-
         protected override void LoadDialogs(out DialogSet dialogs, out List<BaseDialog<IBot4Dialog, BotServices>> instances)
         {
+            // All instances of custom dialogs.
             instances = new List<BaseDialog<IBot4Dialog, BotServices>>() {
                 new NoneDialog(BotServices, this),
                 new EchoDialog(BotServices, this),
@@ -44,6 +49,7 @@ namespace echobot
                 new GreetingDialog(BotServices, this),
              };
 
+            // All dialogs in a DialogSet.
             var set = new DialogSet(State.CreateProperty<DialogState>("DialogState"));
             instances.ForEach(d => set.Add(d));
             dialogs = set;
@@ -51,6 +57,7 @@ namespace echobot
 
         protected override Dictionary<string, Handler> LoadLuisHandlers() => new Dictionary<string, Handler>
         {
+                // Mappings from intent (lower case) to dialogs. As ID we've used the names of the classes
                 { "None".ToLower(), StartDialog(nameof(NoneDialog)) },
                 { "Echo".ToLower(), StartDialog(nameof(EchoDialog)) },
                 // Special Smalltalks
@@ -67,6 +74,7 @@ namespace echobot
 
             // Find TopIntent
             var topIntent = Result?.GetTopScoringIntent();
+            // If classification is too bad, set to none.
             topIntent = (topIntent?.score ?? 0) < 0.3 ? ("None", 1) : topIntent;
 
             bool contains = LuisHandlers.TryGetValue(topIntent?.intent?.ToLower(), out Handler handler);
