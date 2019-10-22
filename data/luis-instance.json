@@ -1,0 +1,64 @@
+{
+  "luis_schema_version": "4.0.0",
+  "versionId": "0.1",
+  "name": "echobot-en",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "Echo"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "ST_Greeting"
+    },
+    {
+      "name": "ST_Test"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "echo",
+      "intent": "Echo",
+      "entities": []
+    },
+    {
+      "text": "echoooo",
+      "intent": "Echo",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "ST_Greeting",
+      "entities": []
+    },
+    {
+      "text": "hi bot",
+      "intent": "ST_Greeting",
+      "entities": []
+    },
+    {
+      "text": "test",
+      "intent": "ST_Test",
+      "entities": []
+    },
+    {
+      "text": "test 1 2 3",
+      "intent": "ST_Test",
+      "entities": []
+    }
+  ],
+  "settings": []
+}
