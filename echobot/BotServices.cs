@@ -12,7 +12,7 @@ namespace echobot
         /// Create the services by configuration.
         /// </summary>
         /// <param name="configuration">the configuration</param>
-        public BotServices(IConfiguration configuration) : base(configuration, Language.English)
+        public BotServices(IConfiguration configuration) : base(configuration)
         {
         }
     }
