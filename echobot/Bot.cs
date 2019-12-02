@@ -1,8 +1,8 @@
 ﻿using echobot.Dialogs;
 using echobot.Dialogs.SmallTalk;
+using Framework.Classifier;
 using Framework.Dialogs;
 using Framework.Dialogs.Smalltalk;
-using Framework.Luis;
 using Framework.Misc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -29,7 +29,7 @@ namespace echobot
         {
             LuisServiceDefinition lsd = JsonConvert.DeserializeObject<LuisServiceDefinition>(File.ReadAllText(LUISConfig));
             // Use LSD and no spell checking
-            _recognizer = new CombinedLuisRecognizer(lsd, false);
+            _recognizer = new LuisClassifier(lsd, false);
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -75,24 +75,24 @@ namespace echobot
             // Find TopIntent
             var topIntent = Result?.GetTopScoringIntent();
             // If classification is too bad, set to none.
-            topIntent = (topIntent?.score ?? 0) < 0.3 ? ("None", 1) : topIntent;
+            topIntent = (topIntent?.Item2 ?? 0) < 0.3 ? ("None", 1) : topIntent;
 
-            bool contains = LuisHandlers.TryGetValue(topIntent?.intent?.ToLower(), out Handler handler);
+            bool contains = LuisHandlers.TryGetValue(topIntent?.Item1?.ToLower(), out Handler handler);
             if (contains)
             {
                 // Default handler
-                await handler(context, GetEntities());
+                await handler(context);
                 return true;
             }
-            else if (topIntent?.intent?.ToLower()?.StartsWith("st_") ?? false)
+            else if (topIntent?.Item1?.ToLower()?.StartsWith("st_") ?? false)
             {
                 // Smalltalk
-                await StartDialog(nameof(SingleStepSmalltalk<IBot4Dialog, BotServices>))(context, GetEntities());
+                await StartDialog(nameof(SingleStepSmalltalk<IBot4Dialog, BotServices>))(context);
                 return true;
             }
             else
             {
-                await SendMessage($"I did not found anything for {topIntent?.intent}", context);
+                await SendMessage($"I did not found anything for {topIntent?.Item1}", context);
             }
             return false;
         }
