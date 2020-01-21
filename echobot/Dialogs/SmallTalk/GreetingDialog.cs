@@ -21,7 +21,7 @@ namespace echobot.Dialogs.SmallTalk
         /// </summary>
         /// <param name="services">the bot services</param>
         /// <param name="bot">the bot itself</param>
-        public GreetingDialog(BotServices services, IBot4Dialog bot) : base(services, bot, nameof(GreetingDialog), RootPath.GetRootPath("echobot", "Dialogs", "SmallTalk-Data"))
+        public GreetingDialog(BotServices services, IBot4Dialog bot) : base(services, bot, nameof(GreetingDialog), "echobot.Dialogs.SmallTalk_Data")
         {
         }
 

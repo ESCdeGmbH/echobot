@@ -23,11 +23,11 @@ namespace echobot
     public class Bot : Framework.Bot<BotServices, IBot4Dialog, BaseDialog<IBot4Dialog, BotServices>>
     {
         // The location of the LUIS Service Definition for classification.
-        private static readonly string LUISConfig = RootPath.GetRootPath("echobot", "luis.json");
+        private static readonly string LUISConfig = MiscExtensions.LoadEmbeddedResource("echobot.luis.json");
 
         public Bot(IConfiguration config, ConversationState state, ILoggerFactory loggerFactory) : base(state, new BotServices(config), loggerFactory, null)
         {
-            LuisServiceDefinition lsd = JsonConvert.DeserializeObject<LuisServiceDefinition>(File.ReadAllText(LUISConfig));
+            LuisServiceDefinition lsd = JsonConvert.DeserializeObject<LuisServiceDefinition>(LUISConfig);
             // Use LSD and no spell checking
             _recognizer = new LuisClassifier(lsd, false);
         }
@@ -45,7 +45,7 @@ namespace echobot
                 new EchoDialog(BotServices, this),
 
                 // Smalltalk
-                new SingleStepSmalltalk<IBot4Dialog,BotServices>(BotServices, this, nameof(SingleStepSmalltalk<IBot4Dialog,BotServices>), RootPath.GetRootPath("echobot", "Dialogs", "SmallTalk-Data")),
+                new SingleStepSmalltalk<IBot4Dialog,BotServices>(BotServices, this, nameof(SingleStepSmalltalk<IBot4Dialog,BotServices>), "echobot.Dialogs.SmallTalk_Data"),
                 new GreetingDialog(BotServices, this),
              };
 
