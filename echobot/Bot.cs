@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,6 +31,7 @@ namespace echobot
             LuisServiceDefinition lsd = JsonConvert.DeserializeObject<LuisServiceDefinition>(LUISConfig);
             // Use LSD and no spell checking
             _recognizer = new LuisClassifier(lsd, false);
+            LoadIntentHandlers();
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -55,21 +57,26 @@ namespace echobot
             dialogs = set;
         }
 
-        protected override Dictionary<string, Handler> LoadLuisHandlers() => new Dictionary<string, Handler>
+        private void LoadIntentHandlers()
         {
+            var handler = new Dictionary<string, string>
+            {
                 // Mappings from intent (lower case) to dialogs. As ID we've used the names of the classes
-                { "None".ToLower(), StartDialog(nameof(NoneDialog)) },
-                { "Echo".ToLower(), StartDialog(nameof(EchoDialog)) },
+                { "None".ToLower(), nameof(NoneDialog) },
+                { "Echo".ToLower(), nameof(EchoDialog) },
                 // Special Smalltalks
-                { "ST_Greeting".ToLower(), StartDialog(nameof(GreetingDialog)) }
-        };
+                { "ST_Greeting".ToLower(), nameof(GreetingDialog) }
+            };
 
-        protected override async Task<bool> SelectTopic(ITurnContext context, CancellationToken cancellationToken)
+            handler.Keys.ToList().ForEach(k => IntentHandler.Add(k, handler[k]));
+        }
+
+        protected override async Task<string> ClassifyDialog(ITurnContext context)
         {
             if (Result == null)
             {
                 // Is initialization ..
-                return true;
+                return null;
             }
 
             // Find TopIntent
@@ -77,24 +84,22 @@ namespace echobot
             // If classification is too bad, set to none.
             topIntent = (topIntent?.Item2 ?? 0) < 0.3 ? ("None", 1) : topIntent;
 
-            bool contains = LuisHandlers.TryGetValue(topIntent?.Item1?.ToLower(), out Handler handler);
+            bool contains = IntentHandler.TryGetValue(topIntent?.Item1?.ToLower(), out string handler);
             if (contains)
             {
                 // Default handler
-                await handler(context);
-                return true;
+                return handler;
             }
             else if (topIntent?.Item1?.ToLower()?.StartsWith("st_") ?? false)
             {
                 // Smalltalk
-                await StartDialog(nameof(SingleStepSmalltalk<IBot4Dialog, BotServices>))(context);
-                return true;
+                return nameof(SingleStepSmalltalk<IBot4Dialog, BotServices>);
             }
             else
             {
                 await SendMessage($"I did not found anything for {topIntent?.Item1}", context);
             }
-            return false;
+            return null;
         }
     }
 }
