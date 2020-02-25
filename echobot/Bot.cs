@@ -30,12 +30,12 @@ namespace echobot
         {
             LuisServiceDefinition lsd = JsonConvert.DeserializeObject<LuisServiceDefinition>(LUISConfig);
             // Use LSD and no spell checking
-            _recognizer = new LuisClassifier(lsd, false);
+            _classifier = new LuisClassifier(lsd, false);
             LoadIntentHandlers();
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            await _recognizer.Recognize(turnContext, cancellationToken);
+            await _classifier.Recognize(turnContext, cancellationToken);
             await HandleDialog(turnContext, cancellationToken);
         }
 
