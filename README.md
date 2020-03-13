@@ -20,9 +20,9 @@ For more informations about the framework [visit the Wiki](https://github.com/ES
 
 The following is a detailed description of how the echo bot project is built.
 
-**Top-Level:** Contains the solution of the repo, as well as the NuGet configuration where the feed for the chatbot framework is stored.
+**Top-Level:** Contains the solution of the repo, as well as the NuGet configuration where the feed for the chatbot framework is located.
 
-**data:** Contains a sporadic version of the LUIS training data as framework
+**data:** Contains a sporadic version of the LUIS training data as template
 
 **echobot:** Contains the actual project; the echo bot.
 
