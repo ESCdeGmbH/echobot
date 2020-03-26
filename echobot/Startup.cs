@@ -7,7 +7,7 @@ namespace echobot
     /// </summary>
     public class Startup : Framework.Startup
     {
-        public Startup(IHostingEnvironment env) : base(env)
+        public Startup(IWebHostEnvironment env) : base(env)
         {
         }
     }
