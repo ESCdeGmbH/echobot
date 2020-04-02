@@ -27,7 +27,7 @@ namespace echobot.Dialogs
         private async Task<DialogTurnResult> SorryStep(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             await TheBot.SendMessage("Sorry, I did not understand you ..", stepContext.Context);
-            return await stepContext.NextAsync();
+            return await ProceedWithDialog(stepContext);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace echobot.Dialogs
             // Send Pong
             await TheBot.SendMessage($"[PONG]: {stepContext.Context.Activity.Text}", stepContext.Context);
             // Continue
-            return await stepContext.NextAsync();
+            return await ProceedWithDialog(stepContext);
         }
     }
 }

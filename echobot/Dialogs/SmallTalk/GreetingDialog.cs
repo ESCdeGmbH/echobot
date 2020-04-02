@@ -39,13 +39,13 @@ namespace echobot.Dialogs.SmallTalk
         {
             await TheBot.SendMessage("What is your name?", stepContext.Context);
             // Wait for user input ..
-            return new DialogTurnResult(DialogTurnStatus.Waiting);
+            return await WaitForUserInput(stepContext);
         }
         private async Task<DialogTurnResult> RespondToName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Respond with name ..
             await TheBot.SendMessage($"Hello, your name is {stepContext.Context.Activity.Text}", stepContext.Context);
-            return await stepContext.NextAsync();
+            return await ProceedWithDialog(stepContext);
         }
 
     }
