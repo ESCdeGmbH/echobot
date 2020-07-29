@@ -1,0 +1,3 @@
+[submodule "echobot/wwwroot/offline-connector"]
+	path = echobot/wwwroot/offline-connector
+	url = https://github.com/ESCdeGmbH/offline-ms-bot-connector
