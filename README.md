@@ -30,7 +30,7 @@ The following is a detailed description of how the echo bot project is built.
 - BotEmulator.bot: Configuration for the BotFramework emulator for testing
 - BotServices.cs: Defines the service connections of a bot instance (such as DB connections)
 - Program.cs: Contains the main method as usual
-- Startup.cs: Common startup class as in any .NET Core WebApp
+- Startup.cs: Common startup class as in any .NET Core WebApp. *You can activate the offline-connector here via the second constructor parameter.*
 - appsettings*.json: logging options etc.
 - echobot.csproj: The project file for the Echo-Bot
 - luis.json: The configuration file for the used LUIS instance.
@@ -48,3 +48,5 @@ Defines the set of responses for a small talk dialog. The naming convention matc
 **echobot/Dialogs/SmallTalk:** Contains an exemplary multi step smalltalk dialogue
 
 **echobot/Properties:** Launch configuration
+
+**echobot/wwwroot:** Contains static website code including the configuration of our [offline-ms-bot-connector](https://github.com/ESCdeGmbH/Offline-MS-Bot-Connector) and a sample offline frontend.
