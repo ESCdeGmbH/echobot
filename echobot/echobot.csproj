@@ -22,7 +22,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Chatbot-Framework" Version="20200729.1.0" />
+    <PackageReference Include="Chatbot-Framework" Version="20200805.1.0" />
   </ItemGroup>
 
 </Project>
